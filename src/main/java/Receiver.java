@@ -1,4 +1,5 @@
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -46,6 +47,13 @@ public class Receiver {
         System.out.println("received: " + message.getText());
 
         // close the queue connection
+        while (true) {
+            Scanner sc= new Scanner(System.in);
+            String op = sc.nextLine();
+            if (op.equalsIgnoreCase("exit")) {
+                break;
+            }
+        }
         queueConn.close();
     }
 }
