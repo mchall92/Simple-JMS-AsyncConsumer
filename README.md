@@ -11,7 +11,6 @@ please follow the these steps:
 6. Go to src/main/java in this directory.
 7. Compile and execute Sender and AsyncReceiver Java files.
 <br>
-<br>
    a. For sender: Enter any non-empty message as mail notification. Enter "exit" if you want to quit the execution.
 <br>
 <br>
