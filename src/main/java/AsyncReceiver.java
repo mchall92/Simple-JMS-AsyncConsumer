@@ -1,3 +1,4 @@
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -16,24 +17,28 @@ import javax.jms.QueueReceiver;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 
-public class AsyncReceiver implements MessageListener, ExceptionListener
-{
+/**
+ * This is the async receiver(consumer) class.
+ */
+public class AsyncReceiver implements MessageListener, ExceptionListener {
+
     static QueueConnection queueConn = null;
-    public static void main(String[] args) throws Exception
-    {
+
+    public static void main(String[] args) throws Exception {
+        // Set up environment
         Properties env = new Properties();
         env.put(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         env.put(Context.PROVIDER_URL, "tcp://localhost:61616");
-        env.put("queue.queueSampleQueue","MyNewQueue");
+        env.put("queue.mailNotificationQueue","MyQueue");
 
         // get the initial context
         InitialContext ctx = new InitialContext(env);
 
-        // lookup the queue object
-        Queue queue = (Queue) ctx.lookup("queueSampleQueue");
+        // look up the queue object
+        Queue queue = (Queue) ctx.lookup("mailNotificationQueue");
 
-        // lookup the queue connection factory
+        // look up the queue connection factory
         QueueConnectionFactory connFactory = (QueueConnectionFactory) ctx.lookup("QueueConnectionFactory");
 
         // create a queue connection
@@ -55,13 +60,14 @@ public class AsyncReceiver implements MessageListener, ExceptionListener
         queueConn.start();
         boolean isStart = true;
 
+        // let user close/restart the connection
         while (true) {
             if (isStart) {
                 System.out.println("Enter close if you want to temporarily close the receiver;");
             } else {
                 System.out.println("Enter start if you want to start the receiver;");
             }
-            System.out.print("Enter exit if you want to stop the receiver: ");
+            System.out.println("Enter exit if you want to stop the receiver.");
             Scanner sc= new Scanner(System.in);
             String op = sc.nextLine();
 
@@ -92,43 +98,32 @@ public class AsyncReceiver implements MessageListener, ExceptionListener
                 System.out.println("Incorrect command, please enter again.");
             }
         }
-
-
-
     }
 
     /**
-     This method is called asynchronously by JMS when a message arrives
-     at the queue. Client applications must not throw any exceptions in
-     the onMessage method.
-     @param message A JMS message.
+     * This method is called asynchronously when connection starts.
+     * Message sent into queue when receiver is closed will be sent when
+     * connection restarts.
+     * @param message A JMS message.
      */
     @Override
     public void onMessage(Message message)
     {
         TextMessage msg = (TextMessage) message;
         try {
-            if(msg.getText().equals("exit")){
-                queueConn.close();
-                System.out.println("Application Exits");
-            }else{
-                System.out.println("received: " + msg.getText());
-            }
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            System.out.println("Received mail notification: " + msg.getText() + "   || Received at " + timestamp);
         } catch (JMSException ex) {
             ex.printStackTrace();
         }
     }
 
     /**
-     This method is called asynchronously by JMS when some error occurs.
-     When using an asynchronous message listener it is recommended to use
-     an exception listener also since JMS have no way to report errors
-     otherwise.
-     @param exception A JMS exception.
+     * This method is called asynchronously by JMS when some error occurs.
+     * @param exception A JMS exception.
      */
     @Override
-    public void onException(JMSException exception)
-    {
-        System.err.println("an error occurred: " + exception);
+    public void onException(JMSException exception) {
+        System.err.println(exception.getMessage());
     }
 }
