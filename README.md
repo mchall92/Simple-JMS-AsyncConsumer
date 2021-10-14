@@ -14,6 +14,6 @@ please follow the these steps:
    a. For sender: Enter any non-empty message as mail notification. Enter "exit" if you want to quit the execution.
 <br>
 <br>
-   b. For Receiver: Connection is automatically started. Enter "start" and "close" to close or restart connection. 
+   b. For AsyncReceiver: Connection is automatically started. Enter "start" and "close" to close or restart connection. 
    Mail notifications will be printed out on the terminal with time stamps. Enter "exit" if you want to quit the 
    execution.

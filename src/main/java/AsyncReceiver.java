@@ -17,6 +17,8 @@ import javax.jms.QueueReceiver;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 
+// Source: https://rupalchatterjee.wordpress.com/tag/jms-asynchronous-receiver-example/
+
 /**
  * This is the async receiver(consumer) class.
  */

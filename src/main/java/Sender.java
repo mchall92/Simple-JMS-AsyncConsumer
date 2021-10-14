@@ -14,6 +14,8 @@ import javax.jms.QueueSession;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 
+// Source: https://rupalchatterjee.wordpress.com/2013/04/27/getting-started-with-java-messaging-service-jms/
+
 /**
  * This is a sender(producer) class.
  */
